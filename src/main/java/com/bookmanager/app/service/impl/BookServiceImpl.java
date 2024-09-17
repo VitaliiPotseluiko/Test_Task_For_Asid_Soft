@@ -3,6 +3,7 @@ package com.bookmanager.app.service.impl;
 import com.bookmanager.app.dto.BookRequestDto;
 import com.bookmanager.app.dto.BookResponseDto;
 import com.bookmanager.app.dto.BookSearchParametersDto;
+import com.bookmanager.app.exception.UniqueIsbnException;
 import com.bookmanager.app.mapper.BookMapper;
 import com.bookmanager.app.model.Book;
 import com.bookmanager.app.repository.BookRepository;
@@ -26,6 +27,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDto save(BookRequestDto requestDto) {
+        if (bookRepository.findByIsbn(requestDto.getIsbn()).isPresent()) {
+            throw new UniqueIsbnException("Can't create. Book with isbn "
+                    + requestDto.getIsbn() + " is exist!");
+        }
         return bookMapper.toDto(bookRepository.save(bookMapper.toModel(requestDto)));
     }
 
@@ -54,6 +59,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDto update(Long id, BookRequestDto requestDto) {
+        if (bookRepository.findByIsbn(requestDto.getIsbn()).isPresent()) {
+            throw new UniqueIsbnException("Can't update. Book with isbn "
+                    + requestDto.getIsbn() + " is exist!");
+        }
         if (bookRepository.existsById(id)) {
             Book book = new Book();
             book.setId(id);

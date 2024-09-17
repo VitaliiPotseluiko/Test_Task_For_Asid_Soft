@@ -45,6 +45,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return getObjectResponseEntity(ex, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UniqueIsbnException.class)
+    public ResponseEntity<Object> entityIsExist(UniqueIsbnException ex) {
+        return getObjectResponseEntity(ex, HttpStatus.BAD_REQUEST);
+    }
+
     private String getErrorMessage(ObjectError error) {
         if (error instanceof FieldError) {
             String field = ((FieldError) error).getField();
