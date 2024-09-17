@@ -10,15 +10,15 @@ import org.hibernate.validator.constraints.ISBN;
 
 @Data
 public class BookRequestDto {
-    @NotEmpty
+    @NotEmpty(message = "can't be empty")
     private String title;
-    @NotEmpty
+    @NotEmpty(message = "can't be empty")
     private String author;
     @NotNull
     @PublicationYear
     private int publicationYear;
     private String genre;
-    @NotEmpty
+    @NotEmpty(message = "can't be empty")
     @ISBN
     private String isbn;
 }

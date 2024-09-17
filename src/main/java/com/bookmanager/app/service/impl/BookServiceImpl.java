@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -59,10 +58,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDto update(Long id, BookRequestDto requestDto) {
-        if (bookRepository.findByIsbn(requestDto.getIsbn()).isPresent()) {
-            throw new UniqueIsbnException("Can't update. Book with isbn "
-                    + requestDto.getIsbn() + " is exist!");
-        }
         if (bookRepository.existsById(id)) {
             Book book = new Book();
             book.setId(id);
