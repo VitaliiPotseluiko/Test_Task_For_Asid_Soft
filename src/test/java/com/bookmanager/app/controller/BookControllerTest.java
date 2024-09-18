@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bookmanager.app.dto.BookRequestDto;
 import com.bookmanager.app.dto.BookResponseDto;
+import com.bookmanager.app.dto.ErrorDto;
 import com.bookmanager.app.dto.ErrorValidationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -44,13 +45,15 @@ class BookControllerTest {
     static void beforeAll(
             @Autowired DataSource dataSource,
             @Autowired WebApplicationContext applicationContext
-            ) throws SQLException {
+            ) {
         mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();
         tearDown(dataSource);
         try(Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(connection,
                     new ClassPathResource("database/book/add-data-to-database.sql"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -127,5 +130,31 @@ class BookControllerTest {
 
         assertEquals(expectedErrors.size(), actual.getErrors().length);
         assertEquals(expectedErrors, Arrays.stream(actual.getErrors()).sorted().toList());
+    }
+
+    @Test
+    @DisplayName("""
+            create book with request dto that has existing isbn
+            """)
+    public void createBook_TheSameIsbn_NotOk() throws Exception {
+        BookRequestDto bookRequestDto = new BookRequestDto();
+        bookRequestDto.setAuthor("Author");
+        bookRequestDto.setTitle("Title");
+        bookRequestDto.setGenre("Poems");
+        bookRequestDto.setPublicationYear(2006);
+        bookRequestDto.setIsbn("978-1-2345-6789-7");
+        String jsonRequest = objectMapper.writeValueAsString(bookRequestDto);
+        String expectedError = "Can't create. Book with isbn "
+                + bookRequestDto.getIsbn() + " is exist!";
+
+        MvcResult result = mockMvc.perform(post(BOOKS_PATH)
+                        .content(jsonRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        ErrorDto actual = objectMapper.readValue(result.getResponse().getContentAsString(),
+                ErrorDto.class);
+
+        assertEquals(expectedError, actual.getError());
     }
 }
