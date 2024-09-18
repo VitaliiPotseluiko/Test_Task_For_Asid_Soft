@@ -6,12 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
+@EqualsAndHashCode
 @Entity
 @Table(name = "books")
 public class Book {
@@ -27,21 +28,4 @@ public class Book {
     private String genre;
     @Column(unique = true)
     private String isbn;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return publicationYear == book.publicationYear && Objects.equals(id, book.id)
-                && Objects.equals(title, book.title)
-                && Objects.equals(author, book.author)
-                && Objects.equals(genre, book.genre)
-                && Objects.equals(isbn, book.isbn);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, author, publicationYear, genre, isbn);
-    }
 }

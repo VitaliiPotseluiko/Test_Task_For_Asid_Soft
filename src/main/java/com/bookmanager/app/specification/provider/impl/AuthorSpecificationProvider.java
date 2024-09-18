@@ -2,9 +2,9 @@ package com.bookmanager.app.specification.provider.impl;
 
 import com.bookmanager.app.model.Book;
 import com.bookmanager.app.specification.provider.SpecificationProvider;
+import java.util.Arrays;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import java.util.Arrays;
 
 @Component
 public class AuthorSpecificationProvider implements SpecificationProvider<Book> {

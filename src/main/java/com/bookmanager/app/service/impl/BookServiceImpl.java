@@ -10,18 +10,17 @@ import com.bookmanager.app.repository.BookRepository;
 import com.bookmanager.app.service.BookService;
 import com.bookmanager.app.specification.builder.impl.BookSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
@@ -42,11 +41,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Long id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-        } else {
+        if (!bookRepository.existsById(id)) {
             throw new EntityNotFoundException("Can't delete book by id " + id + ". Wrong id");
         }
+        bookRepository.deleteById(id);
     }
 
     @Override
@@ -59,13 +57,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto update(Long id, BookRequestDto requestDto) {
         if (bookRepository.existsById(id)) {
-            Book book = new Book();
+            Book book = bookMapper.toModel(requestDto);
             book.setId(id);
-            book.setIsbn(requestDto.getIsbn());
-            book.setGenre(requestDto.getGenre());
-            book.setTitle(requestDto.getTitle());
-            book.setAuthor(requestDto.getAuthor());
-            book.setPublicationYear(requestDto.getPublicationYear());
             return bookMapper.toDto(bookRepository.save(book));
         }
         throw new EntityNotFoundException("Can't update book by id " + id + ". Wrong id");

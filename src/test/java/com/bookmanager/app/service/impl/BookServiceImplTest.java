@@ -33,20 +33,8 @@ class BookServiceImplTest {
             """)
     public void update_UpdateBookWithExistingId_Ok() {
         Long id = 1L;
-        BookRequestDto bookRequestDto = new BookRequestDto();
-        bookRequestDto.setAuthor("Shevchenko Taras");
-        bookRequestDto.setTitle("Kobzar");
-        bookRequestDto.setGenre("Poems");
-        bookRequestDto.setPublicationYear(2000);
-        bookRequestDto.setIsbn("978-2-266-11156-0");
-
-        Book currentBook = new Book();
-        currentBook.setId(id);
-        currentBook.setAuthor("Shevchenko");
-        currentBook.setTitle("Kobzar");
-        currentBook.setGenre("Essays");
-        currentBook.setPublicationYear(1990);
-        currentBook.setIsbn("978-2-266-11156-0");
+        BookRequestDto bookRequestDto = createBookRequestDto();
+        Book currentBook = createBook(id);
 
         Book updatedBook = new Book();
         updatedBook.setId(currentBook.getId());
@@ -65,7 +53,8 @@ class BookServiceImplTest {
         expected.setPublicationYear(bookRequestDto.getPublicationYear());
 
         when(bookRepository.existsById(id)).thenReturn(true);
-        when(bookRepository.save(updatedBook)).thenReturn(updatedBook);
+        when(bookMapper.toModel(bookRequestDto)).thenReturn(currentBook);
+        when(bookRepository.save(currentBook)).thenReturn(updatedBook);
         when(bookMapper.toDto(updatedBook)).thenReturn(expected);
 
         BookResponseDto actual = bookService.update(id, bookRequestDto);
@@ -80,7 +69,7 @@ class BookServiceImplTest {
     @DisplayName("""
             update book with wrong id
             """)
-    public void update_UpdateBookWithNotExistingId_ReturnEntityNotFoundException() {
+    public void update_UpdateBookWithNotExistingId_ThrowsException() {
         Long wrongId = 100L;
         when(bookRepository.existsById(wrongId)).thenReturn(false);
 
@@ -90,5 +79,26 @@ class BookServiceImplTest {
 
         assertEquals("EntityNotFoundException", actual.getClass().getSimpleName());
         assertEquals("Can't update book by id " + wrongId + ". Wrong id", actual.getMessage());
+    }
+
+    private BookRequestDto createBookRequestDto() {
+        BookRequestDto bookRequestDto = new BookRequestDto();
+        bookRequestDto.setAuthor("Shevchenko Taras");
+        bookRequestDto.setTitle("Kobzar");
+        bookRequestDto.setGenre("Poems");
+        bookRequestDto.setPublicationYear(2000);
+        bookRequestDto.setIsbn("978-2-266-11156-0");
+        return bookRequestDto;
+    }
+
+    private Book createBook(Long id) {
+        Book book = new Book();
+        book.setId(id);
+        book.setAuthor("Shevchenko");
+        book.setTitle("Kobzar");
+        book.setGenre("Essays");
+        book.setPublicationYear(1990);
+        book.setIsbn("978-2-266-11156-0");
+        return book;
     }
 }

@@ -69,7 +69,7 @@ class BookControllerTest {
     }
 
     @Test
-    @Sql(scripts = "classpath:database/book/delete-sixth-book.sql",
+    @Sql(scripts = "classpath:database/book/delete-book-where-title=kobzar.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("""
             create new book
@@ -93,7 +93,7 @@ class BookControllerTest {
         MvcResult result = mockMvc.perform(post(BOOKS_PATH)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
         BookResponseDto actual = objectMapper.readValue(result.getResponse().getContentAsString(),
                 BookResponseDto.class);

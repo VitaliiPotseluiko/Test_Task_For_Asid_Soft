@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class BookSearchParametersDto {
-    String[] authors;
-    String[] titles;
-    String[] genres;
+    private String[] authors;
+    private String[] titles;
+    private String[] genres;
 }

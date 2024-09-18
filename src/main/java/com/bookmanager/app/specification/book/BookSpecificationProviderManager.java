@@ -4,10 +4,9 @@ import com.bookmanager.app.exception.SpecificationNotFoundException;
 import com.bookmanager.app.model.Book;
 import com.bookmanager.app.specification.SpecificationProviderManager;
 import com.bookmanager.app.specification.provider.SpecificationProvider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -20,7 +19,7 @@ public class BookSpecificationProviderManager implements SpecificationProviderMa
                 .filter(p -> p.getKey().equals(key))
                 .findFirst()
                 .orElseThrow(
-                        ()-> new SpecificationNotFoundException(
+                        () -> new SpecificationNotFoundException(
                                 "Can't find correct specification provider for key " + key)
                 );
     }
