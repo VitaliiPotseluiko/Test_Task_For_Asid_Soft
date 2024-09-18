@@ -11,3 +11,12 @@ application.
 * `model:` Contains the database model used to represent data entities and map database records to Java objects.
 * `repository:` Contains the data access layer responsible for accessing and manipulating data in the database.
 * `service:` Contains the services responsible for business logic and interaction between controllers and repositories.
+## 🛠 Used technologies:
+
+- Java 17 version
+- Spring Boot 3.3.3 version
+- Spring Data JPA
+- MapStruct tool
+- H2 database
+- Junit-5
+- Mockito
