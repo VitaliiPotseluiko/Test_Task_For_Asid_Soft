@@ -1,15 +1,16 @@
 package com.bookmanager.app.dto;
 
 import com.bookmanager.app.validation.PublicationYear;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.hibernate.validator.constraints.ISBN;
 
 @Data
 public class BookRequestDto {
-    @NotEmpty(message = "can't be empty")
+    @NotBlank(message = "can't be empty")
     private String title;
-    @NotEmpty(message = "can't be empty")
+    @NotBlank(message = "can't be empty")
     private String author;
     @PublicationYear
     private int publicationYear;
